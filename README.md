@@ -6,3 +6,5 @@ Dentro de este repoditorio encontraremos una serie de carpetas/archivos donde ca
 * **Datos**: En esta carpeta se almacenará todos los datos que nosotron trabajaremos en lo que resta del semestre.
 * **Figuras**: En esta carpeta se almacenará algún gráfico (en caso de que ocupe alguno), que utilizaremos en el trabajo.
 * **Productos**: En esta carpeta se encontrará el resultado final del trabajo desarrollado.
+
+saludos
