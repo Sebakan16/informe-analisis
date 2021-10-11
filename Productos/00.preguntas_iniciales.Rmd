@@ -1,0 +1,18 @@
+---
+title: "00.preguntas_iniciales"
+author: "Sebastián Celaya"
+date: "10-10-2021"
+output: html_document
+---
+
+Preguntas que puedo sacar de los datos de series de conexiones mobiles:
+
++Al empezar la pandemia, ¿Las personas compraron más planes de conexiones mobiles que en otros años?
+
++¿Qué tipo de plan prefieren las personas a lo largo del tiempo?
+
++¿Qué crece más rápido, la cantidad de personas que contratan planes, o son las compañías las que aumentan más rápido?
+
++¿En é ha afectado a las compañías la pandamia, en sus ventas de planes de conexión movil?
+
++¿Cual es la conexion preferida de la gente, la 2G o la 3G+4G?
