@@ -1,0 +1,25 @@
+---
+title: "introducion"
+author: "Sebastián Celaya"
+date: "17-10-2021"
+output: html_document
+---
+
+## Párrafo 1:
+
+Dentro del siguiente trabajo analizaremos los datos que tenemos acerca de las series de conexiones a internet móvil (Conocidas también como “datos móviles”) que hay en Chile, separándolas por año, compañía y tipo de plan, de esta manera encontrar algún tipo de relación con estos datos.
+
+
+## Párrafo 2:
+
+Estos datos son muy importantes ya que hoy en día las reces sociales son primordiales para la calidad de vida para los humanos, y para poder tener esto necesitamos de conexiones a internet. Además cabe decir de que las personas prefieren tener el internet en cualquier momento y lugar, por eso es primordial poder observar los datos de las conexiones internet móvil, esto nos dará antecedentes para que las personas a futuro puedan ver si es posible iniciar una nueva empresa que maneje conexiones móviles o para quienes quieren obtener alguna de estas conexiones y no tenga base para ello, este informe ayudará mucho para esas decisiones.
+
+
+## Párrafo 3:
+
+Con estos datos podremos evaluar las situaciones y darles sentido según el contexto de cada año o compañía que analizamos, para así poder estimar los datos que vendrán a futuro
+
+
+## Párrafo 4:
+
+En este texto encontrás los resultados obtenidos de la investigación y seguido, de vez en cuando, por algún gráfico o material visual para mejorar el entendimiento de este tema. También habrá partes donde veamos algunas creencias de causa y efecto de situaciones las cuales vamos a validar o mostrar lo contrario con los datos que tenemos.
