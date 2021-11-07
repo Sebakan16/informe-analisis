@@ -2,17 +2,25 @@ library(tidyr)
 library(readr)
 library(ggplot2)
 library(dplyr)
+library(readxl)
 
-datos = read_csv2("Tabla_conexiones_por_compañia_y_tipo.csv",na = "na", locale = locale(decimal_mark = ","))
-attach(datos)
+#read_excel()
+datos = read_excel(file.choose(), sheet = 3, col_names = TRUE, skip = 7)
 
-datos$Mes = factor(datos$Mes, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+datos$Mes...2 = factor(datos$Mes...2, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
 
 datos %>%
-  filter(Año == 2020) %>%
-  ggplot(aes(x = Mes, y = Movistar))+
-  geom_col(fill = "turquoise3")+
+  filter(Año...1 == 2020) %>%
+  ggplot(aes(x = Mes...2, y = Movistar...3))+
+  geom_col(fill = "firebrick4")+
   labs(title = "Conexiones a internet movil 2G en el año 2020",
        subtitle = "En Movistar",
-       y = "cantidad",
-       x = "meses")
+       y = "Conexiones",
+       x = "Meses")
+
+
+
+
+
+
+

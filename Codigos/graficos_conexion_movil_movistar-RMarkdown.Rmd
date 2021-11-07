@@ -1,0 +1,60 @@
+---
+title: "Grafico_conexiones_movistar2G-2020"
+author: "Sebastián Celaya"
+date: "07-11-2021"
+output: html_document
+---
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+
+datos = read_excel(file.choose(), sheet = 3, col_names = TRUE, skip = 7)
+
+datos$Mes...2 = factor(datos$Mes...2, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+
+datos %>%
+  filter(Año...1 == 2020) %>%
+  ggplot(aes(x = Mes...2, y = Movistar...3))+
+  geom_col(fill = "firebrick4")+
+  labs(title = "Conexiones a internet movil 2G en el año 2020",
+       subtitle = "En Movistar",
+       y = "Conexiones",
+       x = "Meses")
+
+datos %>%
+  filter(Año...1 == 2020) %>%
+  ggplot(aes(x = Mes...2, y = Movistar...11))+
+  geom_col(fill = "royalblue4")+
+  labs(title = "Conexiones a internet movil 3G en el año 2020",
+       subtitle = "En Movistar",
+       y = "Conexiones",
+       x = "Meses")+
+  scale_y_continuous(breaks = seq(0,700000, by = 175000))
+
+datos %>%
+  filter(Año...1 == 2020) %>%
+  ggplot(aes(x = Mes...2, y = Movistar...25))+
+  geom_col(fill = "chartreuse4")+
+  labs(title = "Conexiones a internet movil 4G en el año 2020",
+       subtitle = "En Movistar",
+       y = "Conexiones",
+       x = "Meses")+
+  scale_y_continuous(breaks = seq(0, 4000000, by = 1000000))
+```
+
+
+En este gráfico podemos observar que durante la pandemia (año 2020), una de 
+las empresas más grandes de Chile (Movistar) tuvo una decaida en sus conexiones
+de datos moviles 2G y 3G, pero las conexiones 4G estuvieron en decaida hasta
+marzo, luego de ello, estas vendrían en aumento, una de las posibles 
+explicaciones es que entre marzo y abril emprezaron las clases online, por lo
+que las personas tuvieron que contratar planes de internet movil de mayor 
+calidad, como lo es la de 4G, y por eso fueron en caida las de 2G y 3G.
+
+
+
+
