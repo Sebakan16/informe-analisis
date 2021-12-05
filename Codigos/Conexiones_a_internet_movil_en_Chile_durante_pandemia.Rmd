@@ -1,0 +1,488 @@
+---
+title: "<center>Conexiones a internet móvil en Chile durante pandemia"
+author: "<center>Por:Sebastián Celaya"
+date: "<center>05-12-2021"
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+# Resumen
+
+Las conexiones a internet móvil es un medio de de comunicación digital
+que conecta dispositivos electrónicos con la red de internet. En este informe
+analizaremos el impacto que tuvo la pandemia sobre las empresas de conexiones
+a internet de Chile. Los datos utilizados provienen de la Subsecretaría de
+Telecomunicacipones de Chile, esta contienen información acerca del
+número de personas que estan recibiendo el servicio, que tipo de internet es
+el que reciben y que compañía es de la que reciben este servicio. Los resultados
+mostrarán las preferencias de las personas, sobre la empresa y la calidad de 
+internet que estos reciben. Lograremos distinguir cual es la empresa que predomina
+en el mercado.
+
+# Antecedentes
+
+La velocidad de internet móvil se mide segun la cantidad de información 
+recibida en un segundo. La información se mide en bytes(B) y existen una
+métrica para valores muy altos de bytes, la cual es la siguiente:
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+require(gt)
+
+data.frame(Metrica = c("Kilobyte(Kb)", "Megabyte(Mb)", "Gigabyte(Gb)", "Terabyte(Tb)"),
+           Bytes = c("1.024", "1.048.576", "1.073.741.824", "1.099.511.627.776")
+           ) %>% 
+  gt()
+```
+
+Y existen otros pero para este informe no serán de relevancia. La abreviación
+de los datos recibidos en un segundo, son las mismas de las métricas con el
+sufijo *ps*.
+
+
+# Introducción
+
+En la sociedad actual el internet se ha vuelto algo fundamental en nuestras
+vidas. Muchas empresas han surgido de esta necesidad. En Chile hay 3 empresas
+que se destacan sobre las demás: Movistar, Entel y Claro. Actualmente estas 
+empresas cuentan con 3 tipos de internet móvil:
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+data.frame(Tipo = c("2G", "3G", "4G"),
+           caracteristica = c("velocidad de 384 Kbps", "velocidad de 21Mbps", "velocidad de 326,4Mbps")
+           ) %>% 
+  gt()
+```
+
+Debido a la velocidad que tiene cada tipo, estos tienen ciertas características
+en su uso. Las conexiones 2G fue la primera red digital que disponía de SMS
+con mensajes cortos de 160 caracteres. Las conexiones 3G introdujo la
+tecnología MIMO, que emite señales inalámbricas simultaneamente (puede usar
+más datos al mimo tiempo). Las conexiones 4G logró establecer videollamadas,
+e ir más allá de los SMS con la aplicación WhatsApp
+
+Esta información observada es de relevancia, puesto que se podrá apreciar
+un buen manejo de ciertas empresas haciendo un juicio personal de esta 
+información. Para observar lo antes mencionado usaremos los datos de las
+empresas en epocas de pandemia, donde el internet móvil tiene una intensa
+demanda en comparación a otros años (lo veremos en un gráfico).
+
+# Datos
+
+En este informe se analizarán los datos de las empresas de conexión a internet
+móvil que tiene la Subsecretaría de Telecomunicaciones de Chile. Los datos
+que tenemos son cifras que indican el número de personas que están recibiendo
+el servicio de ciertas empresas según el año y mes. 
+
+Dentro del excel que
+entrega la Subsecretaría, por motivos de manejos de datos, a la columna de los
+años se agregaron el año a cada fila. En el excel descargable de la 
+Subsecretaría tiene celdas concatenadas que dificultan el manejo de datos. Por
+estas razones el excel fue modificado.
+
+Las variables que encontraremos son:
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+data.frame(Variables = c("Fecha", "Año", "Mes", "Conexiones con tecnología 2G", "Conexiones con tecnología 3G", "Conexiones con tecnología 4G", "Movistar", "Entel PCS", "Claro", "Total de conexiones 2G", "Total de conexiones 3G", "Total de conexiones 4G", "Total de Conexiones móviles"),
+           Significado = c("Categoría que incluye las variables de la Fecha", "Variable del año de los datos", "Variable del mes de los datos", "Categoría de todas las empresas que ofrecen servicio 2G", "Categoría de todas las empresas que ofrecen servicio 3G", "Categoría de todas las empresas que ofrecen servicio 4G", "Conexiones de la empresa Movistar", "Conexiones de la empresa Entel PCS", "Conexiones de la empresa Claro", "Total de conexiones de todas las empresas que ofrecen servicio 2G", "Total de conexiones de todas las empresas que ofrecen servicio 3G", "Total de conexiones de todas las empresas que ofrecen servicio 4G", "Total de conexiones de todas las empresas, sin importar el servicio ofrecido")
+) %>% 
+  gt()
+```
+
+Existen otras variables de empresas, pero no son tan influyentes como Movistar
+, Entel PCS y Claro.
+
+# Resultados
+
+## Analisis Total de Conexiones
+
+Vamos a hacer una comparacion general de lo que pasó en los años 2019 y 2020
+con el total de conexiones a internet móvil.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+# Cargamos TODOS los datos
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(readxl)
+library(janitor)
+library(stringr)
+library(ggtext)
+library(hrbrthemes)
+library(magick)
+library(ggimage)
+### !GG
+### Crtl + Shift + C  background
+
+# cargar datos más fáciles ------------------------------------------------
+path_mov = knitr::include_graphics(here::here("Figuras/Logo_movistar.png"))
+path_ent = knitr::include_graphics(here::here("Figuras/Logo_entel.png"))
+path_cla = knitr::include_graphics(here::here("Figuras/Logo_claro.png"))
+
+logo_movistar = image_read(path_mov)
+logo_entel = image_read(path_ent)
+logo_claro = image_read(path_cla)
+
+direc_datos = here::here("Datos/Series_de_conexiones.xlsx")
+
+columnas_1 = read_excel(direc_datos, sheet = 3,range = "B7:AK144", .name_repair = "minimal", n_max = 0) %>% names()
+
+
+nombre_columnas_sin_repetir = columnas_1 %>% 
+  str_subset(".") 
+
+contador = 1:length(nombre_columnas_sin_repetir)
+
+nombre_columnas = c()
+
+for (i in contador) {
+  
+  if (nombre_columnas_sin_repetir[i] == "Fecha"){
+    for (j in 1:2) {
+      nombre_columnas = c(nombre_columnas, nombre_columnas_sin_repetir[i])
+    }
+  }
+  if (nombre_columnas_sin_repetir[i] == "Conexiones con Tecnología 2G"){
+    for (j in 1:8) {
+      nombre_columnas = c(nombre_columnas, nombre_columnas_sin_repetir[i])
+    }
+  }
+  if (nombre_columnas_sin_repetir[i] == "Conexiones con Tecnología 3G"){
+    for (j in 1:14) {
+      nombre_columnas = c(nombre_columnas, nombre_columnas_sin_repetir[i])
+    }
+  }
+  if (nombre_columnas_sin_repetir[i] == "Conexiones con Tecnología 4G"){
+    for (j in 1:11) {
+      nombre_columnas = c(nombre_columnas, nombre_columnas_sin_repetir[i])
+    }
+  }
+}
+nombre_columnas = c(nombre_columnas, "Total")
+
+nombre_columnas_2 = read_excel(direc_datos, sheet = 3,range = "B8:AK144", .name_repair = "minimal", n_max = 0) %>% names()
+
+nombres_columnas = paste(nombre_columnas, "-", nombre_columnas_2)
+
+datos_3 = read_excel(direc_datos, sheet = 3, range = "B9:AK144", col_names = nombres_columnas)
+
+
+# Separando datos --------------------------------------------------------
+
+# 2G
+datos_3_2G = select(datos_3, 1, 2, starts_with("Conexiones Con Tecnología 2G"))
+
+datos_2G_piv = pivot_longer(datos_3_2G, cols = 3:10, names_to = "Compañia", values_to = "Conexiones")
+
+datos_2G_piv$`Fecha - Mes` = factor(datos_2G_piv$`Fecha - Mes`, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+
+#3G
+datos_3G = select(datos_3, 1, 2, starts_with("Conexiones Con Tecnología 3G"))
+
+datos_3G_piv = pivot_longer(datos_3G, cols = 3:16, names_to = "Compañia", values_to = "Conexiones")
+
+datos_3G_piv$`Fecha - Mes` = factor(datos_3G_piv$`Fecha - Mes`, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+
+#4G
+datos_4G = select(datos_3, 1, 2, starts_with("Conexiones Con Tecnología 4G"))
+
+datos_4G_piv = pivot_longer(datos_4G, cols = 3:13, names_to = "Compañia", values_to = "Conexiones")
+
+datos_4G_piv$`Fecha - Mes` = factor(datos_4G_piv$`Fecha - Mes`, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+
+# Datos Totales
+datos_totales = select(datos_3, 1, 2, starts_with("Total"))
+
+datos_totales$`Fecha - Mes`= factor(datos_totales$`Fecha - Mes`, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+
+# Datos por empresa
+datos_empresas = select(datos_3, 1, 2, starts_with("Conexiones Con Tecnología"))
+datos_emp = datos_empresas %>% 
+  mutate(`General Movistar` = datos_empresas$`Conexiones con Tecnología 2G - Movistar` + datos_empresas$`Conexiones con Tecnología 3G - Movistar` + datos_empresas$`Conexiones con Tecnología 4G - Movistar`) %>% 
+  mutate(`General Entel` = datos_empresas$`Conexiones con Tecnología 2G - Entel PCS` + datos_empresas$`Conexiones con Tecnología 3G - Entel PCS` + datos_empresas$`Conexiones con Tecnología 4G - Entel PCS`) %>% 
+  mutate(`General Claro` = datos_empresas$`Conexiones con Tecnología 2G - Claro` + datos_empresas$`Conexiones con Tecnología 3G - Claro` + datos_empresas$`Conexiones con Tecnología 4G - Claro`) 
+
+datos_e = select(datos_emp, 1, 2, starts_with("General"))
+
+datos_em = pivot_longer(datos_e, cols = 3:5, names_to = "Compañia", values_to = "Conexiones")
+datos_em$`Fecha - Mes`= factor(datos_em$`Fecha - Mes`, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))
+```
+
+### Conexiones del 2019
+
+Primero emprezemos analizando las conexiones del 2019:
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+datos_totales %>% 
+  filter(`Fecha - Año` == c(2019))%>% 
+  ggplot(aes(x = `Fecha - Mes`, y = `Total - Total de Conexiones Móviles`, group = `Fecha - Año`))+
+  geom_line()+
+  geom_point()+
+  theme_minimal()+
+  labs(x = "Meses",
+       y = "Total de Conexiones",
+       title = "Total de conexiones en el año 2019")
+```
+
+Podemos apreciar que en tiempos antes de la pandemia entre Enero y Octubre, la demanda era variante. Luego desde Octubre, hasta Diciempre, la demanda sube
+considerablemente. De esta forma hay irregularidades en la demanda en el año 2019.
+
+### Conexiones del 2020
+
+Ahora vamos a observar que pasa en el año 2020 (época de pandemia):
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+datos_totales %>% 
+  filter(`Fecha - Año` == c(2020))%>% 
+  ggplot(aes(x = `Fecha - Mes`, y = `Total - Total de Conexiones Móviles`, group = `Fecha - Año`))+
+  geom_line()+
+  geom_point()+
+  theme_minimal()+
+  labs(x = "Meses",
+       y = "Total de Conexiones",
+       title = "Total de conexiones en el año 2020")
+```
+
+En este gráfico hay una notoria alza en la demanda de internet móvil a partir de
+Abril. Hay muchas razones por las cuales se presente esta alza, entre ellas
+están:
+
+- La cuarentena a partir de Marzo.
+- La entrada a clases online.
+- Las universidades compran bolsas de internet a los estudiantes que necesiten.
+- Comienzo de jornadas de trabajo desde la casa.
+
+Todas estas causas generan una gran necesidad, tener internet en todo momento. A 
+pesar de existir el internet fijo, es el internet móvil el que sube su demanda. Esto
+se explica debido a la cuarentena del pais, donde el servicio tecnico no puede
+ser presencialmente.
+
+ya teniendo esto en cuenta, veamos los números de las 3 grandes empresas de Chile:
+
+## Analisis servicio 2G
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+datos_2G_piv %>% 
+  filter(`Fecha - Año`==2020) %>% 
+  filter(Compañia %in% c("Conexiones con Tecnología 2G - Movistar", "Conexiones con Tecnología 2G - Claro", "Conexiones con Tecnología 2G - Entel PCS")) %>% 
+  ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
+  geom_line(show.legend = FALSE)+
+  geom_point(show.legend = FALSE)+
+  scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
+  labs(x = "Meses",
+       y = "Total de conexiones",
+       title = "Conexiones 2G de <b style='color:#FF0033'>Claro</b>, <b style='color:#002EFF'>Entel</b> y <b style='color:#019DF4'>Movistar</b>",
+       subtitle = "Inicios de pandemia (año 2020)",
+       fill = "Compañia")+
+  theme(plot.title = element_markdown())
+
+grid::grid.raster(logo_movistar, x = 1, y = 0.27, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_entel, x = 1, y = 0.53, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_claro, x = 1, y = 0.215, just = c("right", "top"), width = unit(0.65, "inches"))
+
+```
+
+En el caso del servicio de internet 2G vemos que Entel y Movistar sufren
+una caida en el número de conexiones ofrecidas. Por lo tanto para aquellos
+usuarios que quieran ocupar este servicio de dichas empresas, estas han
+tenido bajas en sus números. Mientras que la empresa Claro se mantiene
+sus números constantes.
+
+Hay muchas interpretaciones para estos números, algunas de ellas son:
+
+- Mala gestión por parte de la empresa para ofrecer el servicio 2G.
+- Cambio a un servicio de mayor calidad (3G o 4G).
+- Preferencia de los usuarios de aplicaciones de mensajerias (WhatsApp o Telegram)
+sobre los SMS.
+
+Estos factores pueden explicar las conexiones de estas 3 empresas.
+
+## Analisis servicio 3G
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+datos_3G_piv %>% 
+  filter(`Fecha - Año`==2020) %>% 
+  filter(Compañia %in% c("Conexiones con Tecnología 3G - Movistar", "Conexiones con Tecnología 3G - Claro", "Conexiones con Tecnología 3G - Entel PCS")) %>% 
+  ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
+  geom_line(show.legend = FALSE)+
+  geom_point(show.legend = FALSE)+
+  scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
+  labs(x = "Meses",
+       y = "Total de conexiones",
+       title = "Conexiones 3G de <b style='color:#FF0033'>Claro</b>, <b style='color:#002EFF'>Entel</b> y <b style='color:#019DF4'>Movistar</b>",
+       subtitle = "Inicios de pandemia (año 2020)",
+       fill = "Compañia")+
+  theme(plot.title = element_markdown())+
+  scale_y_continuous(breaks = c(300000, 440000, 580000, 720000, 860000))
+
+grid::grid.raster(logo_movistar, x = 1, y = 0.41, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_entel, x = 1, y = 0.75, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_claro, x = 1, y = 0.215, just = c("right", "top"), width = unit(0.65, "inches"))
+
+```
+
+Estas 3 empresas tuvieron una caida en el número de conexiones del servicio 3G.
+Teniendo 2 posibles explicaciones de este fenómeno:
+
+- Las empresas no impartieron este servicio de la mejor manera.
+- Los usuarios prefieren una mejor calidad de internet, que puede ofrecer el 4G.
+
+El primero requiere de infromación sobre quejas de este servicio, las cuales
+no estan abiertas para el publico. Mientras que la segunda explicación lo
+vamos a ver si las empresas en su servicio 4G se ve un alza de la cantidad
+de usuarios.
+
+Por el momento tomatemos la segunda idea como una teoría posible
+que explique lo sucedido en el gráfico.
+
+## Análisis servicio 4G
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+datos_4G_piv %>% 
+  filter(`Fecha - Año`==2020) %>% 
+  filter(Compañia %in% c("Conexiones con Tecnología 4G - Movistar", "Conexiones con Tecnología 4G - Claro", "Conexiones con Tecnología 4G - Entel PCS")) %>% 
+  ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
+  geom_line(show.legend = FALSE)+
+  geom_point(show.legend = FALSE)+
+  scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
+  labs(x = "Meses",
+       y = "Total de conexiones",
+       title = "Conexiones 4G de <b style='color:#FF0033'>Claro</b>, <b style='color:#002EFF'>Entel</b> y <b style='color:#019DF4'>Movistar</b>",
+       subtitle = "Inicios de pandemia (año 2020)",
+       fill = "Compañia")+
+  theme(plot.title = element_markdown())+
+  scale_y_continuous(breaks = c(300000, 440000, 580000, 720000, 860000))
+
+grid::grid.raster(logo_movistar, x = 1, y = 0.38, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_entel, x = 1, y = 0.85, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_claro, x = 1, y = 0.20, just = c("right", "top"), width = unit(0.65, "inches"))
+```
+
+En este gráfico observamos una enorme alza de las cantidad de conexiones en Movistar y Entel. Por lo tanto la teoría plantea anteriormente, puede tener
+mayor respaldo para estas 2 empresas.
+
+Por otro lado Claro tiene una decaida en sus número de conexiones, por lo tanto
+la teoría anterior no aplica. Podríamos explicar la caida de los números de Claro
+por una mala ejecucion de la empresa en su servicio.
+
+Hay que mencionar que además de estas teorías, pueden existir más. Nosotros
+fijamos estas 2 porque son simples y no necesitan de mucho contexto para
+entenderse.
+
+## Análisis según la empresa
+
+Hemos visto los datos de las empresas según el servicio que estas ofrezcan.
+Pero ahora es momento de observar de manera global los datos de las empresas
+para llegar a una conclusión respaldada con datos.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
+datos_em %>% 
+  filter(`Fecha - Año`==2020) %>% 
+  ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
+  geom_line(show.legend = FALSE)+
+  geom_point(show.legend = FALSE)+
+  scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
+  labs(x = "Meses",
+       y = "Total de conexiones",
+       title = "Conexiones totales de <b style='color:#FF0033'>Claro</b>, <b style='color:#002EFF'>Entel</b> y <b style='color:#019DF4'>Movistar</b>",
+       subtitle = "Inicios de pandemia (año 2020)",
+       fill = "Compañia")+
+  theme(plot.title = element_markdown())+
+  scale_y_continuous(breaks = c(3300000, 4300000, 5300000, 6300000, 7300000))
+
+grid::grid.raster(logo_movistar, x = 1, y = 0.41, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_entel, x = 1, y = 0.81, just = c("right", "top"), width = unit(0.65, "inches"))
+grid::grid.raster(logo_claro, x = 1, y = 0.24, just = c("right", "top"), width = unit(0.65, "inches"))
+```
+
+En este gráfico podemos observar la evolución de las 3 empresas, junto con lo
+visto en los demás gráficos podemos dar los resultados acerca de este tema.
+
+# Conclusión
+
+En la sección "Resultados" vimos la evolución de las conexiones a internet
+móvil en Chile a traves de 3 empresas. En general las conexiones 2G y 3G las
+empresas perdieron a muchos usuarios, por culpa de las empresas o por preferencia
+de los usuarios. Notamos una diferencia en los servicios 4G, donde Entel y Movistar
+aumentan el número de usuarios, mientras que Claro siguen bajando su número.
+De modo general Entel y Movistar tienen un número creciente de conexiones, mientras
+que Claro bajan sus números en todas las calidades de internet.
+
+En un comienzo nos preguntabamos "¿Qué empresas prefería la gente?", "En 
+epocas de pandemia, ¿Cuál(es) empresa sabe manejar esta situación?" y
+"¿Cual(es) empresas no tiene buenos resultados?" ahora con los resultados
+listos, podemos decir que Entel es la empresa preferia de la gente, tanto en
+la calidad 2G, 3G y 4G. Entel y Movistar supieron manejar los contratiempos de
+la cuarentena y subieron sus números durante esta. Claro es la empresa que ha
+presentado resultados negativos en esta pandemia, bajando el número de usuarios
+de esta empresa. 
+
+Finalmente, podemos decir que el numero de conexiones de Entel y Movistar van
+a seguir subiendo. Por su parte Claro mientras no hagan algo con la baja de 
+sus números, estos van a seguir bajando.
+
+# Referencias
+
+R Core Team (2021). R: A language and environment for statistical
+  computing. R Foundation for Statistical Computing, Vienna, Austria.
+  URL https://www.R-project.org/.
+
+Hadley Wickham (2021). tidyr: Tidy Messy Data. R package version
+  1.1.3. https://CRAN.R-project.org/package=tidyr
+
+Hadley Wickham and Jim Hester (2021). readr: Read Rectangular Text
+  Data. R package version 2.0.1.
+  https://CRAN.R-project.org/package=readr
+  
+  H. Wickham. ggplot2: Elegant Graphics for Data Analysis.
+  Springer-Verlag New York, 2016.
+  
+  Hadley Wickham, Romain François, Lionel Henry and Kirill Müller
+  (2021). dplyr: A Grammar of Data Manipulation. R package version
+  1.0.7. https://CRAN.R-project.org/package=dplyr
+  
+  Hadley Wickham and Jennifer Bryan (2019). readxl: Read Excel Files. R
+  package version 1.3.1. https://CRAN.R-project.org/package=readxl
+  
+  Sam Firke (2021). janitor: Simple Tools for Examining and Cleaning
+  Dirty Data. R package version 2.1.0.
+  https://CRAN.R-project.org/package=janitor
+  
+  Hadley Wickham (2019). stringr: Simple, Consistent Wrappers for Common
+  String Operations. R package version 1.4.0.
+  https://CRAN.R-project.org/package=stringr
+
+  Claus O. Wilke (2020). ggtext: Improved Text Rendering Support for
+  'ggplot2'. R package version 0.1.1.
+  https://CRAN.R-project.org/package=ggtext
+  
+  Bob Rudis (2020). hrbrthemes: Additional Themes, Theme Components and
+  Utilities for 'ggplot2'. R package version 0.8.0.
+  https://CRAN.R-project.org/package=hrbrthemes
+  
+  Jeroen Ooms (2021). magick: Advanced Graphics and Image-Processing in
+  R. R package version 2.7.3. https://CRAN.R-project.org/package=magick
+  
+  Subsecretaria de Telecomunicaciones (SubTel). Estadísticas, internet. Series
+  conexiones internet móvil. https://www.subtel.gob.cl/estudios-y-estadisticas/internet/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

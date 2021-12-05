@@ -7,6 +7,9 @@ library(janitor)
 library(stringr)
 library(ggtext)
 
+### !GG
+### Crtl + Shift + C  background
+
 
 # cargar datos más fáciles ------------------------------------------------
 

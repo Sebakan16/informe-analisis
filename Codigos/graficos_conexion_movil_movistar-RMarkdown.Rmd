@@ -12,6 +12,8 @@ library(ggplot2)
 library(dplyr)
 library(readxl)
 
+##### read_excel(here::here("nombre del archivo"))
+
 datos = read_excel(file.choose(), sheet = 3, col_names = TRUE, skip = 7)
 
 datos$Mes...2 = factor(datos$Mes...2, levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"))

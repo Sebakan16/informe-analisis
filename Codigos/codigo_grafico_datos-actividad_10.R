@@ -45,3 +45,11 @@ View(datos)
 
 opciones = c("Cajon", "paseo")
 respuesta_sacamos_a = sample(opciones, 1)
+
+
+
+install.packages("gt")
+install.packages("gtsummary")
+remotes::install_github("jthomasmock/gtExtras")
+install.packages("broom")
+install.packages("palmerpenguins")

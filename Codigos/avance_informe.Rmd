@@ -8,9 +8,10 @@ output:
 ---
 
 Dentro del siguiente trabajo analizaremos los datos que tenemos acerca de las 
-series de conexiones a internet móvil (Conocidas también como “datos móviles”) 
+series de conexiones a internet móvil (conocidas también como “datos móviles”) 
 que hay en Chile, separándolas por año, compañía y tipo de plan, de esta manera 
 encontrar algún tipo de relación con estos datos.
+
 Estos datos son muy importantes ya que hoy en día las reces sociales son 
 primordiales para la calidad de vida para los humanos, y para poder tener esto 
 necesitamos de conexiones a internet. Además cabe decir de que las personas 
@@ -20,20 +21,24 @@ antecedentes para que las personas a futuro puedan ver si es posible iniciar una
 nueva empresa que maneje conexiones móviles o para quienes quieren obtener 
 alguna de estas conexiones y no tenga base para ello, este informe ayudará mucho
 para esas decisiones.
+
 Con estos datos podremos evaluar las situaciones y darles sentido según el 
 contexto de cada año o compañía que analizamos, para así poder estimar los datos
-que vendrán a futuro
+que vendrán a futuro.
+
 En este texto encontrás los resultados obtenidos de la investigación y seguido, de
 vez en cuando, por algún gráfico o material visual para mejorar el entendimiento
 de este tema. También habrá partes donde veamos algunas creencias de causa y 
 efecto de situaciones las cuales vamos a validar o mostrar lo contrario con los 
 datos que tenemos.
+
 Las conexiones a internet móvil en Chile se pueden distinguir de 3 tipos:
 2G, 3G, y 4G. Las cuales se diferencian en la calidad, velocidad y seguridad de 
 la conexión a internet, siendo la 2G la de menor calidad, velocidad y seguridad,
 mientras que la 4G hasta hace poco es la de mayor calidad, velocidad y seguridad.
 Actualmente se está implementando una conexión 5G que supera los estándares del
 4G, pero todavía no lo lanzan al público en general las grandes empresas.
+
 En la historia de Chile, existen 3 compañías que han existido desde los inicios
 de las conexiones a internet en general, que son Movistar, Entel y Claro. Y en
 esos tiempos se fueron generando muchas otras empresas, pero que no tenían tanto 
@@ -143,15 +148,15 @@ datos_2G_piv %>%
   theme(plot.title = element_markdown())
 ```
 
-Podemos observar una caida por parte de la compañía Entel y Movistar de su 
-servicio a internet móvil 2G, una explicación muy aceptable, es que como se 
-viene de antes, las preferencias de las personas es la calidad sobre el precio
-y si le sumamos la cuarentena por el coronavirus, muchos alumnos entraron
-a unas jornadas de clases en línea, por lo que tener una buena señal de internet
-ha sido necesaria, por esto contratan internet móvil, porque no puede ir un
-trabajador a su casa a instalar un modem de internet fijo que sea de mayor
-calidad, porque hay cuarentena. Entonces muchos usuarios de 2G se cambian
-a una mejor conexión a internet.
+Podemos observar una caida de servicio a internet móvil 2G, por parte de la 
+compañía Entel y Movistar. Una explicación posible es que por producto de el 
+cambio de formate ode las clases a formato en línea muchas personas decidieron 
+contratar internet móvil, ya que en el contexto de la cuarentena volviera 
+dificil la instalación de un modem. En este gráfico no se observa una subida de
+conexiones, pero esto se debe a que son conexiones 2G, la menor calidad de las
+que existen actualmente, por lo que  muchos usuarios de 2G se cambian a una 
+mejor conexión a internet.
+
 Para comprobar esta teoría, observemos lo que nos dicen los demás gráficos:
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = TRUE}
@@ -193,10 +198,10 @@ datos_4G_piv %>%
 ```
 
 Podemos observar que es correcta nuestra conclusión, muchos usuarios del servicio
-2G debieron preferir un servicio de mayor calidad como el de 3G y 4G. Eso si
+2G debieron preferir un servicio de mayor calidad como el de 3G y 4G. Eso sí
 hay que observar que hay una baja de los consumidores del servicio 4G de Claro
-, aunque menor a la vista en movistar y entel de los servicios 3G y 4G, debemos
-obserbar el caso de Claro para poder entender esta situación, Lo observaremos
+, aunque menor a la vista en movistar y entel de los servicios 2G y 3G. Debemos
+observar el caso de Claro para poder entender esta situación, Lo observaremos
 más adelante, haciendo un estudio de esa empresa por esos años, para encontrar la
 explicación.
 
