@@ -273,6 +273,7 @@ datos_2G_piv %>%
   ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
   geom_line(show.legend = FALSE)+
   geom_point(show.legend = FALSE)+
+  theme_minimal()+
   scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
   labs(x = "Meses",
        y = "Total de conexiones",
@@ -311,6 +312,7 @@ datos_3G_piv %>%
   ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
   geom_line(show.legend = FALSE)+
   geom_point(show.legend = FALSE)+
+  theme_minimal()+
   scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
   labs(x = "Meses",
        y = "Total de conexiones",
@@ -349,6 +351,7 @@ datos_4G_piv %>%
   ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
   geom_line(show.legend = FALSE)+
   geom_point(show.legend = FALSE)+
+  theme_minimal()+
   scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
   labs(x = "Meses",
        y = "Total de conexiones",
@@ -356,7 +359,7 @@ datos_4G_piv %>%
        subtitle = "Inicios de pandemia (año 2020)",
        fill = "Compañia")+
   theme(plot.title = element_markdown())+
-  scale_y_continuous(breaks = c(300000, 440000, 580000, 720000, 860000))
+  scale_y_continuous(breaks = c(3000000, 3875000, 4750000, 5625000, 6500000))
 
 grid::grid.raster(logo_movistar, x = 1, y = 0.38, just = c("right", "top"), width = unit(0.65, "inches"))
 grid::grid.raster(logo_entel, x = 1, y = 0.85, just = c("right", "top"), width = unit(0.65, "inches"))
@@ -386,6 +389,7 @@ datos_em %>%
   ggplot(aes(`Fecha - Mes`, Conexiones, group = Compañia, color = Compañia))+
   geom_line(show.legend = FALSE)+
   geom_point(show.legend = FALSE)+
+  theme_minimal()+
   scale_colour_manual(values = c("#FF0033", "#002EFF", "#019DF4"))+
   labs(x = "Meses",
        y = "Total de conexiones",
